@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Road to 2022!</title>
+    <title>Road to 2023!</title>
     
     <meta charset="UTF-8">
     <meta property="og:title" content="New year timer"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://alkanife.fr/newyear"/>
-    <meta property="og:description" content="#2022"/>
+    <meta property="og:description" content="#2023"/>
     <meta property="og:image" content="https://alkanife.fr/newyear/firework.png"/>
     <meta name="theme-color" content="#111">
 
