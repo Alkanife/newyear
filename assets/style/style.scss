@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Quantico';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../Quantico-Bold.ttf') format('truetype');
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,6 +14,17 @@
 
 body {
     background-color: #0e0d0d;
+}
+
+#particles-js {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
 main {

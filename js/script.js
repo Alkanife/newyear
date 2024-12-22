@@ -5,11 +5,16 @@ window.onload = () => {
     }
     
     createCountdown();
+    createParticles();
 }
 
 const titleElement = document.querySelector('h1');
 const newYearDate = new Date("Jan 1, " + (new Date().getFullYear()+1) + " 00:00:00");
-//const newYearDate = new Date("Dec 22, 2024 08:49:00");
+//const newYearDate = new Date("Dec 22, 2024 13:57:40");
+
+function createParticles() {
+    particlesJS.load('particles-js', 'assets/particles.json');
+}
 
 function createCountdown() {
     const interval = setInterval(function () {
@@ -102,6 +107,8 @@ function areWeCelebrating() {
 }
 
 function celebrate() {
+    document.getElementById('particles-js').remove();
+    
     titleElement.style.transition = 'none';
     titleElement.style.fontSize = '5vw';
     titleElement.textContent = 'Happy new year ' + newYearDate.getFullYear() + '!';
