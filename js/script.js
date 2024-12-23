@@ -1,105 +1,193 @@
-window.onload = () => {
+let pageWidth = window.innerWidth;
+
+const newYearDate = new Date("Jan 1, " + (new Date().getFullYear()+1) + " 00:00:00");
+//const newYearDate = new Date("Dec 23, 2024 15:48:00");
+
+let timerTitleElement = document.getElementById('timer-title');
+
+const daysContainer = document.querySelector('.daysContainer');
+const daysElement = document.getElementById('days');
+const daysTextElement = document.getElementById('days-text');
+
+const hoursContainer = document.querySelector('.hoursContainer');
+const hoursElement = document.getElementById('hours');
+const hoursTextElement = document.getElementById('hours-text');
+
+const minutesContainer = document.querySelector('.minutesContainer');
+const minutesElement = document.getElementById('minutes');
+const minutesTextElement = document.getElementById('minutes-text');
+
+const secondsElement = document.getElementById('seconds');
+const secondsTextElement = document.getElementById('seconds-text');
+
+let interval = null;
+
+// Events
+window.addEventListener('load', () => {
     if (areWeCelebrating()) {
         celebrate()
         return;
     }
     
-    createCountdown();
+    createDots();
+    
+    loop();
+    interval = setInterval(function () {
+        loop();
+    }, 1000)
+    
     createParticles();
-}
+})
 
-const titleElement = document.querySelector('h1');
-const newYearDate = new Date("Jan 1, " + (new Date().getFullYear()+1) + " 00:00:00");
-//const newYearDate = new Date("Dec 22, 2024 13:57:40");
+window.addEventListener('resize', () => {
+    pageWidth = window.innerWidth;
+});
+
+timerTitleElement.addEventListener('click', (event) => {
+    timerTitleElement.remove();
+    timerTitleElement = undefined;
+})
+
+// Functions
+function createDots() {
+    for (const dot of document.querySelectorAll('.dots')) {
+        dot.textContent = ':';
+    }
+}
 
 function createParticles() {
     particlesJS.load('particles-js', 'assets/particles.json');
 }
 
-function createCountdown() {
-    const interval = setInterval(function () {
-        const now = new Date().getTime();
-        const t = newYearDate.getTime() - now;
+function loop() {
+    const now = new Date().getTime();
+    const t = newYearDate.getTime() - now;
+    
+    if (t < 1000 || areWeCelebrating()){
+        clearInterval(interval);
+        celebrate();
+        return;
+    }
+    
+    const days = Math.floor(t / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
+    const minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((t % (1000 * 60)) / 1000);
+    
+    updateTimerTitle(days, hours, minutes);
+    
+    if (days === 0) {
+        daysContainer.remove();
         
-        if (t < 1000 || areWeCelebrating()){
-            clearInterval(interval);
-            celebrate();
-            return;
+        if (hours === 0) {
+            hoursContainer.remove();
         }
         
-        const days = Math.floor(t / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
-        const minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((t % (1000 * 60)) / 1000);
-        
-        titleElement.textContent = '';
-        let textContent = '';
-
-        if (days > 0) {
-            textContent += days + ':';
-            textContent += addZero(hours) + ':';
-            textContent += addZero(minutes) + ':';
-        } else if (hours > 0) {
-            textContent += hours + ':';
-            textContent += addZero(minutes) + ':';
-        } else if (minutes > 0) {
-            textContent += addZero(minutes) + ':';
+        if (minutes === 0) {
+            minutesContainer.remove();
         }
-        
-        if (days === 0 && hours === 0 && minutes === 0) {
-            textContent += seconds;
-            
-            switch (seconds) {
-                case 10:
-                    titleElement.style.fontSize = '10vw';
-                    break;
-                    
-                case 9:
-                    titleElement.style.fontSize = '12vw';
-                    break;
-                    
-                case 8:
-                    titleElement.style.fontSize = '14vw';
-                    break;
-                    
-                case 7:
-                    titleElement.style.fontSize = '16vw';
-                    break;
-                    
-                case 6:
-                    titleElement.style.fontSize = '18vw';
-                    break;
-                    
-                case 5:
-                    titleElement.style.fontSize = '20vw';
-                    break;
-                    
-                case 4:
-                    titleElement.style.fontSize = '22vw';
-                    break;
-                    
-                case 3:
-                    titleElement.style.fontSize = '24vw';
-                    break;
-                
-                case 2:
-                    titleElement.style.fontSize = '28vw';
-                    break;
-                
-                case 1:
-                    titleElement.style.fontSize = '30vw';
-                    break;
-                
-                default:
-                    break;
-            }
+    }
+    
+    if (pageWidth <= 599) {
+        if (days === 0 && hours === 0) {
+            document.querySelector('main').classList.add('always-vertical');
+            daysContainer.remove();
+            updateDesktopElements(days, hours, minutes, seconds);
         } else {
-            textContent += addZero(seconds);
+            daysElement.textContent = ''+days;
+            daysTextElement.textContent = plural('day', days);
+            
+            hoursElement.textContent = ''+hours;
+            hoursTextElement.textContent = plural('hour', hours);
+            
+            minutesElement.textContent = ''+minutes;
+            minutesTextElement.textContent = plural('minute', minutes);
+            
+            secondsElement.textContent = ''+seconds;
+            secondsTextElement.textContent = plural('second', seconds);
         }
+    } else {
+        document.querySelector('main').classList.remove('always-vertical');
+        updateDesktopElements(days, hours, minutes, seconds);
+    }
+}
 
-        titleElement.textContent = textContent;
+function plural(word, num) {
+    if (num <= 1) {
+        return word;
+    } else {
+        return word + 's';
+    }
+}
+
+function updateTimerTitle(days, hours, minutes) {
+    if (timerTitleElement === undefined) {
+        return;
+    }
+    
+    if (days === 0) {
+        timerTitleElement.textContent = 'This is the last day...';
         
-    }, 1000)
+        if (hours === 0) {
+            timerTitleElement.textContent = "Less than an hour!";
+            
+            if (minutes <= 5) {
+                timerTitleElement.textContent = "IT'S THE FINAL COUNTDOWN!";
+                
+                if (minutes === 0) {
+                    timerTitleElement.remove();
+                    timerTitleElement = undefined;
+                }
+            }
+        }
+    } else {
+        timerTitleElement.textContent = 'New year timer!';
+    }
+}
+
+function updateDesktopElements(days, hours, minutes, seconds) {
+    if (days > 0) {
+        daysElement.textContent = ''+days;
+        hoursElement.textContent = addZero(hours);
+        minutesElement.textContent = addZero(minutes);
+    } else if (hours > 0) {
+        hoursElement.textContent = addZero(hours);
+        minutesElement.textContent = addZero(minutes);
+    } else if (minutes > 0) {
+        minutesElement.textContent = addZero(minutes);
+    }
+    
+    if (days === 0 && hours === 0 && minutes === 0) {
+        secondsElement.textContent = seconds;
+        secondsElement.className = 'num last-seconds';
+        
+        switch (seconds) {
+            case 5:
+                secondsElement.className = 'num last-five';
+                break;
+            
+            case 4:
+                secondsElement.className = 'num last-four';
+                break;
+            
+            case 3:
+                secondsElement.className = 'num last-three';
+                break;
+            
+            case 2:
+                secondsElement.className = 'num last-two';
+                break;
+            
+            case 1:
+                secondsElement.className = 'num last-one';
+                break;
+            
+            default:
+                break;
+        }
+    } else {
+        secondsElement.textContent = addZero(seconds);
+    }
 }
 
 function areWeCelebrating() {
@@ -109,10 +197,20 @@ function areWeCelebrating() {
 function celebrate() {
     document.getElementById('particles-js').remove();
     
-    titleElement.style.transition = 'none';
-    titleElement.style.fontSize = '5vw';
-    titleElement.textContent = 'Happy new year ' + newYearDate.getFullYear() + '!';
+    if (timerTitleElement !== undefined) {
+        timerTitleElement.remove();
+    }
     
+    const mainContainer = document.querySelector('main');
+    
+    mainContainer.innerHTML = '';
+    
+    const happyNewYear = document.createElement('h1');
+    happyNewYear.textContent = 'Happy new year ' + newYearDate.getFullYear() + '!';
+    happyNewYear.id = 'happy-new-year';
+    mainContainer.appendChild(happyNewYear);
+    
+    sendConfetti();
     sendConfetti();
     sendConfetti();
     sendConfetti();
@@ -122,9 +220,9 @@ function celebrate() {
 }
 
 function sendConfetti() {
-    const duration = 1 * 1000,
+    const duration = 1000,
         animationEnd = Date.now() + duration,
-        defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: -2 };
     
     function randomInRange(min, max) {
         return Math.random() * (max - min) + min;

@@ -1,3 +1,51 @@
+@mixin main-flex-style {
+    display: flex;
+    gap: 0 !important;
+
+    > div {
+        gap: 0 !important;
+    }
+
+    .num {
+        width: unset !important;
+        text-align: unset !important;
+        transition: font-size 1s ease;
+    }
+
+    .text {
+        display: none;
+    }
+
+    .dots {
+        display: block !important;
+        transition: font-size 1s ease;
+    }
+
+    .last-seconds {
+        font-size: 20vw !important;
+    }
+
+    .last-five {
+        font-size: 22vw !important;
+    }
+
+    .last-four {
+        font-size: 24vw !important;
+    }
+
+    .last-three {
+        font-size: 26vw !important;
+    }
+
+    .last-two {
+        font-size: 28vw !important;
+    }
+
+    .last-one {
+        font-size: 30vw !important;
+    }
+}
+
 @font-face {
     font-family: 'Quantico';
     font-style: normal;
@@ -9,11 +57,9 @@
     margin: 0;
     padding: 0;
     color: #fefefe;
-    overflow: hidden;
-}
-
-body {
-    background-color: #0e0d0d;
+    font-family: "Quantico", serif;
+    font-weight: 700;
+    font-style: normal;
 }
 
 #particles-js {
@@ -23,25 +69,117 @@ body {
     bottom: 0;
     right: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100dvw;
+    height: 100dvh;
 }
 
-main {
-    width: 100vw;
-    height: 100vh;
+body {
+    background-color: #0e0d0d;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    h1 {
-        font-family: "Quantico", serif;
-        font-weight: 700;
-        font-style: normal;
-        font-size: 10vw;
+    width: 100dvw;
+    height: 100dvh;
+    min-height: 500px;
+
+    #timer-title {
         text-align: center;
-        transition: font-size ease 1s;
+        font-size: 35px;
+        margin-bottom: 60px;
+        color: #9a5bff;
+
+        cursor: pointer;
+
+        &:hover {
+            opacity: 70%;
+        }
+    }
+
+    main {
+        > div {
+            display: flex;
+            align-items: center;
+
+            gap: 20px;
+
+            .num {
+                text-align: right;
+                font-size: 56px;
+                width: 100px;
+            }
+
+            .text, .dots {
+                color: #a9a9a9;
+            }
+
+            .text {
+                font-size: 38px;
+            }
+
+            .dots {
+                display: none;
+            }
+        }
+
+        &.always-vertical {
+            .num {
+                font-size: 15vw !important;
+            }
+
+            .dots {
+                font-size: 15vw !important;
+            }
+
+            @include main-flex-style;
+        }
+
+        #happy-new-year {
+            font-size: 40px;
+            text-align: center;
+            color: white;
+        }
+    }
+}
+
+@media (min-width: 600px) {
+    main {
+        .num {
+            font-size: 10vw !important;
+        }
+
+        .dots {
+            font-size: 10vw !important;
+        }
+
+        @include main-flex-style;
+
+        #happy-new-year {
+            font-size: 7vw !important;
+        }
+    }
+}
+
+@media (min-width: 1000px) {
+    #timer-title {
+        font-size: 4vw !important;
+    }
+}
+
+@media (min-width: 3000px) {
+    #timer-title {
+        font-size: 120px !important;
+    }
+
+    main {
+        .num {
+            font-size: 300px !important;
+        }
+
+        .dots {
+            font-size: 300px !important;
+        }
     }
 }
